@@ -32,7 +32,9 @@ All parsing happens locally. The app listens on `127.0.0.1` and does not upload 
 - Cached input is tracked separately from non-cached input.
 - OpenCode support depends on the local sqlite schema available on the machine.
 
-### Scripts
+### Development Commands
+
+You only need `npm start` for normal use. The commands below are for checking changes while developing or maintaining the project.
 
 ```bash
 npm run check
@@ -69,7 +71,9 @@ http://127.0.0.1:4242
 - 命中缓存的输入会和普通输入分开统计。
 - OpenCode 支持取决于本机可用的 sqlite 数据结构。
 
-### 脚本
+### 开发命令
+
+普通使用只需要执行 `npm start`。下面两个命令主要用于开发或维护时检查改动。
 
 ```bash
 npm run check

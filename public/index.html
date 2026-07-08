@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Local Tokei</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <div class="kicker">LOCAL AI METER</div>
+          <h1>Local Tokei</h1>
+        </div>
+        <div class="top-actions">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换到白天模式">日</button>
+          <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">EN</button>
+          <button class="refresh-button" id="refreshButton" type="button" data-i18n="refresh">刷新</button>
+          <div class="status">
+            <span class="pulse"></span>
+            <span id="updated" data-i18n="reading">正在读取本地数据</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero-grid">
+        <article class="panel total-panel">
+          <div class="panel-label" data-i18n="totalTokens">Token 总量</div>
+          <div class="total-number" id="totalTokens">--</div>
+          <div class="subtle" data-i18n="codexSessions">Codex 本机会话</div>
+          <div class="range-row">
+            <div>
+              <span data-i18n="today">今天</span>
+              <strong id="todayTokens">--</strong>
+            </div>
+            <div>
+              <span data-i18n="sevenDays">7 天</span>
+              <strong id="weekTokens">--</strong>
+            </div>
+            <div>
+              <span data-i18n="thirtyDays">30 天</span>
+              <strong id="monthTokens">--</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel cost-panel">
+          <div class="panel-label" data-i18n="estimatedCost">预估成本</div>
+          <div class="cost" id="cost">$--</div>
+          <p data-i18n="costNote">基于已解析的输入和输出 Token 做本地估算。</p>
+          <details class="cost-details">
+            <summary data-i18n="costDetails">统计口径</summary>
+            <p id="costDetailsText">--</p>
+          </details>
+          <div class="mini-metric">
+            <span data-i18n="sessions">会话数</span>
+            <strong id="sessionCount">--</strong>
+          </div>
+          <div class="mini-metric">
+            <span data-i18n="filesScanned">已扫描文件</span>
+            <strong id="filesScanned">--</strong>
+          </div>
+        </article>
+
+        <article class="panel split-panel">
+          <div class="panel-label" data-i18n="tokenMix">Token 构成</div>
+          <div class="donut-wrap">
+            <div class="donut" id="donut"></div>
+            <div class="legend">
+              <div><span class="swatch input"></span><span data-i18n="input">输入</span><strong id="inputTokens">--</strong></div>
+              <div><span class="swatch cached"></span><span data-i18n="cached">缓存</span><strong id="cachedTokens">--</strong></div>
+              <div><span class="swatch output"></span><span data-i18n="output">输出</span><strong id="outputTokens">--</strong></div>
+              <div><span class="swatch reasoning"></span><span data-i18n="reasoning">推理</span><strong id="reasoningTokens">--</strong></div>
+            </div>
+          </div>
+          <div class="cache-hit">
+            <span data-i18n="cacheHitRate">缓存命中率</span>
+            <strong id="cacheHitRate">--</strong>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel filter-panel">
+        <div class="section-head">
+          <div>
+            <div class="panel-label" data-i18n="filters">筛选</div>
+            <h2 data-i18n="filterUsage">用量范围</h2>
+          </div>
+        </div>
+        <div class="filters">
+          <label>
+            <span data-i18n="range">时间</span>
+            <select id="rangeFilter">
+              <option value="all" data-i18n="allTime">全部</option>
+              <option value="today" data-i18n="today">今天</option>
+              <option value="7d" data-i18n="sevenDays">7 天</option>
+              <option value="30d" data-i18n="thirtyDays">30 天</option>
+            </select>
+          </label>
+          <label>
+            <span data-i18n="projects">项目</span>
+            <select id="projectFilter"></select>
+          </label>
+          <label>
+            <span data-i18n="models">模型</span>
+            <select id="modelFilter"></select>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel error-panel" id="errorPanel" hidden>
+        <div class="panel-label" data-i18n="loadFailed">读取失败</div>
+        <p id="errorText"></p>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel chart-panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-label" data-i18n="lastThirty">最近 30 天</div>
+              <h2 data-i18n="dailyUsage">每日用量</h2>
+            </div>
+          </div>
+          <div class="bars" id="bars"></div>
+          <div class="daily-details" id="dailyDetails"></div>
+        </article>
+
+        <article class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-label" data-i18n="agents">工具 / Agent</div>
+              <h2 data-i18n="toolDistribution">工具分布</h2>
+            </div>
+          </div>
+          <div class="stack-list" id="tools"></div>
+        </article>
+
+        <article class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-label" data-i18n="models">模型</div>
+              <h2 data-i18n="modelDistribution">模型分布</h2>
+            </div>
+          </div>
+          <div class="stack-list" id="models"></div>
+        </article>
+
+        <article class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-label" data-i18n="projects">项目</div>
+              <h2 data-i18n="topWorkspaces">高频工作区</h2>
+            </div>
+          </div>
+          <div class="stack-list" id="projects"></div>
+        </article>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="section-head">
+          <div>
+            <div class="panel-label" data-i18n="recent">最近</div>
+            <h2 data-i18n="sessionTitle">会话</h2>
+          </div>
+        </div>
+        <div class="session-list" id="sessions"></div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

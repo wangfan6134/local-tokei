@@ -1,0 +1,14 @@
+{
+  "name": "local-tokei",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A local AI usage dashboard inspired by Tokei.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test",
+    "check": "node server.js --check"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
